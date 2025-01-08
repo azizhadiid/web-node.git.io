@@ -1,11 +1,24 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const morgan = require('morgan');
 const app = express();
 const port = 3000;
 
-// Gunakan EJS
+// Gunakan EJS dan Express Layouts
 app.set('view engine', 'ejs');
+// third-party middleware
 app.use(expressLayouts);
+app.use(morgan('dev'));
+
+
+// Buildin Middleware
+app.use(express.static('public'));
+
+// Aplikasi level middle were
+app.use((req, res, next) => {
+  console.log('Time', Date.now());
+  next();
+});
 
 // root
 app.get('/', (req, res) => {
@@ -28,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 // ini adalah halaman about
-app.get('/about', (req, res) => {
+app.get('/about', (req, res, next) => {
   res.render('about', {
     layout: 'layouts/main-layout',
     title: 'Halaman About'
